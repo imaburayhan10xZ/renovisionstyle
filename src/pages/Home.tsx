@@ -1,45 +1,48 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle, Star, Quote } from 'lucide-react';
+import { ArrowRight, CheckCircle, Star, Quote, Hammer, Paintbrush, Wrench, Droplets, Settings, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Testimonial } from '@/types';
+import { Testimonial, Service } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+
+const iconMap: Record<string, any> = {
+  'Hammer': Hammer,
+  'Paintbrush': Paintbrush,
+  'Wrench': Wrench,
+  'Droplets': Droplets,
+  'Settings': Settings,
+};
 
 export default function Home() {
   const { settings } = useSiteSettings();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
   const { t } = useLanguage();
 
   useEffect(() => {
-    const fetchTestimonials = async () => {
+    const fetchData = async () => {
       if (!db) return;
       try {
-        const q = query(
-          collection(db, 'testimonials'), 
-          where('approved', '==', true)
-        );
-        const querySnapshot = await getDocs(q);
-        const fetched = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Testimonial[];
-        
-        // Sort client-side to avoid needing a composite index
-        fetched.sort((a, b) => {
-          const dateA = a.createdAt?.seconds || 0;
-          const dateB = b.createdAt?.seconds || 0;
-          return dateB - dateA;
-        });
-        
-        setTestimonials(fetched.slice(0, 3));
+        // Fetch Testimonials
+        const tQuery = query(collection(db, 'testimonials'), where('approved', '==', true));
+        const tSnapshot = await getDocs(tQuery);
+        const fetchedT = tSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Testimonial[];
+        fetchedT.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        setTestimonials(fetchedT.slice(0, 3));
+
+        // Fetch Services
+        const sQuery = query(collection(db, 'services'), where('active', '==', true), limit(6));
+        const sSnapshot = await getDocs(sQuery);
+        const fetchedS = sSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Service[];
+        setServices(fetchedS);
       } catch (error) {
-        console.error("Error fetching testimonials:", error);
+        console.error("Error fetching home data:", error);
       }
     };
-    fetchTestimonials();
+    fetchData();
   }, []);
 
   return (
@@ -109,7 +112,7 @@ export default function Home() {
               {
                 title: t('home.feature.craftsmanship'),
                 desc: t('home.feature.craftsmanship.desc'),
-                icon: Star,
+                icon: ShieldCheck,
               },
               {
                 title: t('home.feature.materials'),
@@ -119,7 +122,7 @@ export default function Home() {
               {
                 title: t('home.feature.delivery'),
                 desc: t('home.feature.delivery.desc'),
-                icon: ArrowRight,
+                icon: Star,
               },
             ].map((feature, index) => (
               <motion.div
@@ -140,6 +143,59 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Services Overview */}
+      {services.length > 0 && (
+        <section id="services-overview" className="py-24 bg-gray-50 dark:bg-gray-900/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+              <div className="max-w-2xl">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">{t('services.title')}</h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {t('services.subtitle')}
+                </p>
+              </div>
+              <Link
+                to="/services"
+                className="text-blue-600 dark:text-blue-400 font-bold flex items-center gap-2 hover:gap-3 transition-all"
+              >
+                View All Services <ArrowRight size={20} />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.map((service, index) => {
+                const IconComponent = iconMap[service.icon] || Hammer;
+                return (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100 dark:border-gray-700"
+                  >
+                    <div className="h-48 overflow-hidden">
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
+                        <IconComponent size={20} />
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{service.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{service.description}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Testimonials Section */}
       {testimonials.length > 0 && (

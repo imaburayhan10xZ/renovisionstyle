@@ -1,9 +1,10 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Users, FileText, Image, MessageSquare, Calendar, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { collection, getCountFromServer, query, where } from 'firebase/firestore';
+import { collection, getCountFromServer } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useLanguage } from '@/context/LanguageContext';
+import { insertInitialData } from '@/lib/initialData';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -16,9 +17,12 @@ export default function Dashboard() {
   const { t } = useLanguage();
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const initializeAndFetch = async () => {
       if (!db) return;
       try {
+        // Run initial data insertion once if empty
+        await insertInitialData();
+
         const servicesCount = await getCountFromServer(collection(db, 'services'));
         const projectsCount = await getCountFromServer(collection(db, 'projects'));
         const postsCount = await getCountFromServer(collection(db, 'posts'));
@@ -33,11 +37,11 @@ export default function Dashboard() {
           bookings: bookingsCount.data().count
         });
       } catch (error) {
-        console.error("Error fetching stats:", error);
+        console.error("Error in dashboard:", error);
       }
     };
 
-    fetchStats();
+    initializeAndFetch();
   }, []);
 
   const data = [

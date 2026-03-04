@@ -14,6 +14,7 @@ import Portfolio from '@/pages/Portfolio';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import Blog from '@/pages/Blog';
+import FAQ from '@/pages/FAQ';
 
 // Admin Pages
 import Login from '@/pages/admin/Login';
@@ -45,6 +46,7 @@ export default function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/faq" element={<FAQ />} />
               </Route>
 
               {/* Admin Routes */}
