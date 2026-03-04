@@ -3,7 +3,7 @@ export type Language = 'en' | 'bn' | 'ms';
 export const translations = {
   en: {
     // General
-    'app.name': 'RenovatePro',
+    'app.name': 'Renovision & Repair Expert',
     'app.description': 'Transforming spaces with precision and passion.',
     
     // Navigation
@@ -51,14 +51,14 @@ export const translations = {
     'portfolio.viewDetails': 'View Project Details',
 
     // About Page
-    'about.title': 'About RenovatePro',
+    'about.title': 'About Renovision & Repair Expert',
     'about.subtitle': 'Building dreams, one project at a time. We are a team of dedicated professionals committed to excellence in every renovation.',
     'about.stats.years': 'Years Experience',
     'about.stats.projects': 'Projects Completed',
     'about.stats.team': 'Team Members',
     'about.stats.satisfaction': 'Satisfaction Rate',
     'about.story.title': 'Our Story',
-    'about.story.content': 'Founded in 2010, RenovatePro began with a simple mission: to bring high-quality craftsmanship and transparent pricing to the renovation industry.',
+    'about.story.content': 'Founded in 2010, Renovision & Repair Expert began with a simple mission: to bring high-quality craftsmanship and transparent pricing to the renovation industry.',
 
     // Contact Page
     'contact.title': 'Get in Touch',
@@ -154,7 +154,7 @@ export const translations = {
   },
   bn: {
     // General
-    'app.name': 'রেনোভেটপ্রো',
+    'app.name': 'রেনোভিশন অ্যান্ড রিপেয়ার এক্সপার্ট',
     'app.description': 'নির্ভুলতা এবং আবেগের সাথে স্থান পরিবর্তন করা।',
     
     // Navigation
@@ -202,14 +202,14 @@ export const translations = {
     'portfolio.viewDetails': 'প্রজেক্টের বিবরণ দেখুন',
 
     // About Page
-    'about.title': 'রেনোভেটপ্রো সম্পর্কে',
+    'about.title': 'রেনোভিশন অ্যান্ড রিপেয়ার এক্সপার্ট সম্পর্কে',
     'about.subtitle': 'স্বপ্ন তৈরি করছি, একেকটি প্রজেক্টে। আমরা প্রতিটি সংস্কারে শ্রেষ্ঠত্বের জন্য প্রতিশ্রুতিবদ্ধ নিবেদিত পেশাদারদের একটি দল।',
     'about.stats.years': 'বছরের অভিজ্ঞতা',
     'about.stats.projects': 'সম্পন্ন প্রজেক্ট',
     'about.stats.team': 'টিম মেম্বার',
     'about.stats.satisfaction': 'সন্তুষ্টির হার',
     'about.story.title': 'আমাদের গল্প',
-    'about.story.content': '২০১০ সালে প্রতিষ্ঠিত, রেনোভেটপ্রো একটি সাধারণ লক্ষ্য নিয়ে শুরু হয়েছিল: সংস্কার শিল্পে উচ্চ-মানের কারুশিল্প এবং স্বচ্ছ মূল্য নির্ধারণ করা।',
+    'about.story.content': '২০১০ সালে প্রতিষ্ঠিত, রেনোভিশন অ্যান্ড রিপেয়ার এক্সপার্ট একটি সাধারণ লক্ষ্য নিয়ে শুরু হয়েছিল: সংস্কার শিল্পে উচ্চ-মানের কারুশিল্প এবং স্বচ্ছ মূল্য নির্ধারণ করা।',
 
     // Contact Page
     'contact.title': 'যোগাযোগ করুন',
@@ -305,7 +305,7 @@ export const translations = {
   },
   ms: {
     // General
-    'app.name': 'RenovatePro',
+    'app.name': 'Renovision & Repair Expert',
     'app.description': 'Mengubah ruang dengan ketepatan dan semangat.',
     
     // Navigation
@@ -353,7 +353,7 @@ export const translations = {
     'portfolio.viewDetails': 'Lihat Butiran Projek',
 
     // About Page
-    'about.title': 'Tentang RenovatePro',
+    'about.title': 'Tentang Renovision & Repair Expert',
     'about.subtitle': 'Membina impian, satu projek pada satu masa. Kami adalah pasukan profesional berdedikasi yang komited terhadap kecemerlangan dalam setiap pengubahsuaian.',
     'about.stats.years': 'Tahun Pengalaman',
     'about.stats.projects': 'Projek Siap',

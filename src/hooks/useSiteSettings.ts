@@ -17,14 +17,14 @@ const defaultSettings: SiteSettings = {
   ctaTitle: 'Ready to Transform Your Home?',
   ctaSubtitle: "Let's discuss your vision and bring it to life. Schedule a consultation today.",
   
-  aboutTitle: 'About Renovision',
+  aboutTitle: 'About Renovision & Repair Expert',
   aboutDescription: 'Building dreams, one project at a time. We are a team of dedicated professionals committed to excellence in every renovation.',
   statYears: '15+',
   statProjects: '500+',
   statTeam: '40+',
   statSatisfaction: '99%',
   storyTitle: 'Our Story',
-  storyContent: 'Founded in 2010, Renovision began with a simple mission: to bring high-quality craftsmanship and transparent pricing to the renovation industry.',
+  storyContent: 'Founded in 2010, Renovision & Repair Expert began with a simple mission: to bring high-quality craftsmanship and transparent pricing to the renovation industry.',
   storyImage: 'https://images.unsplash.com/photo-1581578731117-104f8a3d46a8?q=80&w=1000&auto=format&fit=crop',
   
   footerDescription: 'Transforming spaces with precision and passion. Your trusted partner for all renovation and repair needs.',
