@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { toast } from 'react-hot-toast';
-import { Plus, Pencil, Trash2, X, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, Upload } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 
 interface Service {
   id: string;
   title: string;
   description: string;
   icon: string;
+  image?: string;
   active?: boolean;
 }
 
@@ -17,8 +19,9 @@ export default function AdminServices() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
-  const [formData, setFormData] = useState({ title: '', description: '', icon: 'Hammer' });
+  const [formData, setFormData] = useState({ title: '', description: '', icon: 'Hammer', image: '' });
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -28,8 +31,8 @@ export default function AdminServices() {
   const fetchServices = async () => {
     if (!db) {
       setServices([
-        { id: '1', title: 'Kitchen Remodeling', description: 'Complete kitchen overhaul.', icon: 'Hammer' },
-        { id: '2', title: 'Bathroom Renovation', description: 'Modern bathroom designs.', icon: 'Droplets' },
+        { id: '1', title: 'Kitchen Remodeling', description: 'Complete kitchen overhaul.', icon: 'Hammer', image: '' },
+        { id: '2', title: 'Bathroom Renovation', description: 'Modern bathroom designs.', icon: 'Droplets', image: '' },
       ]);
       setLoading(false);
       return;
@@ -46,11 +49,28 @@ export default function AdminServices() {
       console.error("Error fetching services: ", error);
       // Fallback for demo
       setServices([
-        { id: '1', title: 'Kitchen Remodeling', description: 'Complete kitchen overhaul.', icon: 'Hammer' },
-        { id: '2', title: 'Bathroom Renovation', description: 'Modern bathroom designs.', icon: 'Droplets' },
+        { id: '1', title: 'Kitchen Remodeling', description: 'Complete kitchen overhaul.', icon: 'Hammer', image: '' },
+        { id: '2', title: 'Bathroom Renovation', description: 'Modern bathroom designs.', icon: 'Droplets', image: '' },
       ]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      setFormData(prev => ({ ...prev, image: url }));
+      toast.success('Image uploaded');
+    } catch (error) {
+      console.error('Upload failed', error);
+      toast.error('Upload failed');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -74,7 +94,7 @@ export default function AdminServices() {
       }
       setIsModalOpen(false);
       setEditingService(null);
-      setFormData({ title: '', description: '', icon: 'Hammer' });
+      setFormData({ title: '', description: '', icon: 'Hammer', image: '' });
       fetchServices();
     } catch (error) {
       console.error(error);
@@ -97,10 +117,15 @@ export default function AdminServices() {
   const openModal = (service?: Service) => {
     if (service) {
       setEditingService(service);
-      setFormData({ title: service.title, description: service.description, icon: service.icon });
+      setFormData({ 
+        title: service.title, 
+        description: service.description, 
+        icon: service.icon,
+        image: service.image || ''
+      });
     } else {
       setEditingService(null);
-      setFormData({ title: '', description: '', icon: 'Hammer' });
+      setFormData({ title: '', description: '', icon: 'Hammer', image: '' });
     }
     setIsModalOpen(true);
   };
@@ -185,11 +210,36 @@ export default function AdminServices() {
                   required
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Service Image</label>
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-4 text-center hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer relative">
+                  <input
+                    type="file"
+                    onChange={handleImageUpload}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    accept="image/*"
+                  />
+                  {formData.image ? (
+                    <div className="relative">
+                      <img src={formData.image} alt="Preview" className="h-32 w-full object-cover rounded" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded">
+                        <span className="text-white font-medium">Click to change</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-gray-500 py-4">
+                      <Upload className="mx-auto mb-2" size={24} />
+                      <span className="text-sm">Upload Service Image</span>
+                    </div>
+                  )}
+                </div>
+              </div>
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors"
+                disabled={uploading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors disabled:opacity-50"
               >
-                {editingService ? t('admin.update') : t('admin.create')}
+                {uploading ? 'Uploading...' : (editingService ? t('admin.update') : t('admin.create'))}
               </button>
             </form>
           </div>
