@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Hammer, Paintbrush, Wrench, Ruler, Home as HomeIcon, Droplets, Star, Settings, PenTool } from 'lucide-react';
+import { Hammer, Paintbrush, Wrench, Ruler, Home as HomeIcon, Droplets, Star, Settings, PenTool, ArrowRight } from 'lucide-react';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Service } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { Link } from 'react-router-dom';
 
 // Icon mapping
 const iconMap: Record<string, any> = {
@@ -94,23 +95,30 @@ export default function Services() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
                 >
-                  <div className="h-48 overflow-hidden relative">
-                    <img
-                      src={service.image || 'https://images.unsplash.com/photo-1581578731117-104f8a3d46a8?q=80&w=1000&auto=format&fit=crop'}
-                      alt={service.title}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                      <span className="text-white font-medium">{t('services.learnMore')} &rarr;</span>
+                  <Link to={`/contact?service=${encodeURIComponent(service.title)}`} className="block h-full">
+                    <div className="h-48 overflow-hidden relative">
+                      <img
+                        src={service.image || 'https://images.unsplash.com/photo-1581578731117-104f8a3d46a8?q=80&w=1000&auto=format&fit=crop'}
+                        alt={service.title}
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581578731117-104f8a3d46a8?q=80&w=1000&auto=format&fit=crop';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                        <span className="text-white font-medium flex items-center gap-2">
+                          {t('services.learnMore')} <ArrowRight size={18} />
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
-                      <IconComponent size={24} />
+                    <div className="p-6">
+                      <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
+                        <IconComponent size={24} />
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{service.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 line-clamp-3">{service.description}</p>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{service.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-400 line-clamp-3">{service.description}</p>
-                  </div>
+                  </Link>
                 </motion.div>
               );
             })}

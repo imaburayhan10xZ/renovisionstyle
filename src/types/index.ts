@@ -24,6 +24,7 @@ export interface Project {
   location?: string;
   featured: boolean;
   description: string;
+  active: boolean;
   createdAt: any;
 }
 
@@ -50,6 +51,7 @@ export interface Testimonial {
   rating: number;
   image?: string;
   approved: boolean;
+  active: boolean;
   createdAt: any;
 }
 
@@ -58,6 +60,7 @@ export interface FAQ {
   question: string;
   answer: string;
   category: string;
+  active: boolean;
   createdAt: any;
 }
 
@@ -83,6 +86,12 @@ export interface Booking {
   createdAt: any;
 }
 
+export interface SocialLink {
+  platform: string;
+  url: string;
+  icon?: string;
+}
+
 export interface SiteSettings {
   siteName: string;
   logo?: string;
@@ -93,6 +102,7 @@ export interface SiteSettings {
   socialTwitter?: string;
   socialInstagram?: string;
   socialLinkedin?: string;
+  socialLinks?: SocialLink[];
   themeColor: string;
   
   // Home Page

@@ -175,20 +175,30 @@ export default function Home() {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100 dark:border-gray-700"
                   >
-                    <div className="h-48 overflow-hidden">
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
-                        <IconComponent size={20} />
+                    <Link to={`/contact?service=${encodeURIComponent(service.title)}`} className="block h-full">
+                      <div className="h-48 overflow-hidden relative">
+                        <img
+                          src={service.image || 'https://images.unsplash.com/photo-1581578731117-104f8a3d46a8?q=80&w=1000&auto=format&fit=crop'}
+                          alt={service.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581578731117-104f8a3d46a8?q=80&w=1000&auto=format&fit=crop';
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                          <span className="text-white font-medium flex items-center gap-2">
+                            {t('services.learnMore')} <ArrowRight size={18} />
+                          </span>
+                        </div>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{service.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{service.description}</p>
-                    </div>
+                      <div className="p-6">
+                        <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
+                          <IconComponent size={20} />
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{service.title}</h3>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{service.description}</p>
+                      </div>
+                    </Link>
                   </motion.div>
                 );
               })}
@@ -199,16 +209,16 @@ export default function Home() {
 
       {/* Testimonials Section */}
       {testimonials.length > 0 && (
-        <section id="testimonials" className="py-24 bg-gray-50 dark:bg-gray-900">
+        <section id="testimonials" className="py-24 bg-white dark:bg-gray-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">{t('home.testimonials.title')}</h2>
-              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">{t('home.testimonials.title')}</h2>
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                 {t('home.testimonials.subtitle')}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
               {testimonials.map((testimonial, index) => (
                 <motion.div
                   key={testimonial.id}
@@ -216,18 +226,28 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative"
+                  className="break-inside-avoid bg-gray-50 dark:bg-gray-900 p-8 rounded-3xl border border-gray-100 dark:border-gray-800 relative group hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors duration-300"
                 >
-                  <Quote className="absolute top-8 right-8 text-blue-100 dark:text-blue-900/20" size={48} />
-                  <div className="flex gap-1 mb-4">
+                  <Quote className="absolute top-6 right-6 text-blue-200 dark:text-blue-800 opacity-20 group-hover:opacity-40 transition-opacity" size={40} />
+                  
+                  <div className="flex gap-1 mb-6">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} size={16} className={`${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-gray-600'}`} />
                     ))}
                   </div>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 italic relative z-10">"{testimonial.content}"</p>
-                  <div>
-                    <h4 className="font-bold text-gray-900 dark:text-white">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
+
+                  <p className="text-gray-700 dark:text-gray-300 mb-8 text-lg leading-relaxed italic">
+                    "{testimonial.content}"
+                  </p>
+
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/20">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 dark:text-white">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
+                    </div>
                   </div>
                 </motion.div>
               ))}

@@ -27,6 +27,12 @@ const defaultSettings: SiteSettings = {
   storyContent: 'Founded in 2010, Renovision & Repair Expert began with a simple mission: to bring high-quality craftsmanship and transparent pricing to the renovation industry.',
   storyImage: 'https://images.unsplash.com/photo-1581578731117-104f8a3d46a8?q=80&w=1000&auto=format&fit=crop',
   
+  socialLinks: [
+    { platform: 'Facebook', url: 'https://facebook.com' },
+    { platform: 'Twitter', url: 'https://twitter.com' },
+    { platform: 'Instagram', url: 'https://instagram.com' },
+    { platform: 'LinkedIn', url: 'https://linkedin.com' },
+  ],
   footerDescription: 'Transforming spaces with precision and passion. Your trusted partner for all renovation and repair needs.',
 };
 

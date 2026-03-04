@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { toast } from 'react-hot-toast';
 import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSearchParams } from 'react-router-dom';
+import { Service } from '@/types';
 
 type FormData = {
   name: string;
@@ -17,9 +19,39 @@ type FormData = {
 
 export default function Contact() {
   const { settings } = useSiteSettings();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
+  const [searchParams] = useSearchParams();
+  const initialService = searchParams.get('service') || '';
+  
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<FormData>({
+    defaultValues: {
+      service: initialService
+    }
+  });
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      if (!db) return;
+      try {
+        const q = query(collection(db, 'services'), where('active', '==', true));
+        const snapshot = await getDocs(q);
+        const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Service[];
+        setServices(fetched);
+      } catch (error) {
+        console.error("Error fetching services for contact form:", error);
+      }
+    };
+    fetchServices();
+  }, []);
+
+  useEffect(() => {
+    if (initialService) {
+      setValue('service', initialService);
+    }
+  }, [initialService, setValue]);
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -134,11 +166,9 @@ export default function Contact() {
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                   >
                     <option value="">{t('contact.form.service.select')}</option>
-                    <option value="Full Renovation">{t('contact.form.service.full')}</option>
-                    <option value="Kitchen">{t('contact.form.service.kitchen')}</option>
-                    <option value="Bathroom">{t('contact.form.service.bathroom')}</option>
-                    <option value="Painting">{t('contact.form.service.painting')}</option>
-                    <option value="Flooring">{t('contact.form.service.flooring')}</option>
+                    {services.map(s => (
+                      <option key={s.id} value={s.title}>{s.title}</option>
+                    ))}
                     <option value="Other">{t('contact.form.service.other')}</option>
                   </select>
                   {errors.service && <span className="text-red-500 text-sm mt-1">{errors.service.message}</span>}

@@ -15,7 +15,8 @@ export default function AdminTestimonials() {
     role: '',
     content: '',
     rating: 5,
-    approved: true
+    approved: true,
+    active: true
   });
 
   useEffect(() => {
@@ -47,20 +48,29 @@ export default function AdminTestimonials() {
     if (!db) return;
 
     try {
-      const data = { ...formData, createdAt: serverTimestamp() };
+      const data = { 
+        ...formData, 
+        updatedAt: serverTimestamp(),
+        active: formData.active ?? true 
+      };
+      
       if (editingId) {
         await updateDoc(doc(db, 'testimonials', editingId), data);
-        toast.success('Testimonial updated');
+        toast.success('Testimonial updated successfully');
       } else {
-        await addDoc(collection(db, 'testimonials'), data);
-        toast.success('Testimonial added');
+        await addDoc(collection(db, 'testimonials'), {
+          ...data,
+          createdAt: serverTimestamp()
+        });
+        toast.success('Testimonial added successfully');
       }
       setIsModalOpen(false);
       setEditingId(null);
-      setFormData({ name: '', role: '', content: '', rating: 5, approved: true });
+      setFormData({ name: '', role: '', content: '', rating: 5, approved: true, active: true });
       fetchTestimonials();
     } catch (error) {
-      toast.error('Operation failed');
+      console.error("Error saving testimonial:", error);
+      toast.error('Failed to save testimonial');
     }
   };
 
@@ -76,13 +86,15 @@ export default function AdminTestimonials() {
     }
   };
 
-  const toggleApproval = async (testimonial: Testimonial) => {
+  const toggleStatus = async (testimonial: Testimonial, field: 'approved' | 'active') => {
     if (!db) return;
     try {
+      const newValue = !((testimonial as any)[field]);
       await updateDoc(doc(db, 'testimonials', testimonial.id), {
-        approved: !testimonial.approved
+        [field]: newValue,
+        updatedAt: serverTimestamp()
       });
-      toast.success(`Testimonial ${!testimonial.approved ? 'approved' : 'hidden'}`);
+      toast.success(`Testimonial ${field} status updated`);
       fetchTestimonials();
     } catch (error) {
       toast.error('Update failed');
@@ -97,11 +109,12 @@ export default function AdminTestimonials() {
         role: testimonial.role,
         content: testimonial.content,
         rating: testimonial.rating,
-        approved: testimonial.approved
+        approved: testimonial.approved,
+        active: testimonial.active ?? true
       });
     } else {
       setEditingId(null);
-      setFormData({ name: '', role: '', content: '', rating: 5, approved: true });
+      setFormData({ name: '', role: '', content: '', rating: 5, approved: true, active: true });
     }
     setIsModalOpen(true);
   };
@@ -125,7 +138,7 @@ export default function AdminTestimonials() {
           <div key={testimonial.id} className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm relative">
             <div className="absolute top-4 right-4 flex gap-2">
               <button
-                onClick={() => toggleApproval(testimonial)}
+                onClick={() => toggleStatus(testimonial, 'approved')}
                 className={`p-1.5 rounded-full ${testimonial.approved ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500'}`}
                 title={testimonial.approved ? "Approved" : "Hidden"}
               >

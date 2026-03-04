@@ -12,7 +12,8 @@ export default function Dashboard() {
     projects: 0,
     posts: 0,
     leads: 0,
-    bookings: 0
+    bookings: 0,
+    testimonials: 0
   });
   const { t } = useLanguage();
 
@@ -28,13 +29,15 @@ export default function Dashboard() {
         const postsCount = await getCountFromServer(collection(db, 'posts'));
         const leadsCount = await getCountFromServer(collection(db, 'leads'));
         const bookingsCount = await getCountFromServer(collection(db, 'bookings'));
+        const testimonialsCount = await getCountFromServer(collection(db, 'testimonials'));
 
         setStats({
           services: servicesCount.data().count,
           projects: projectsCount.data().count,
           posts: postsCount.data().count,
           leads: leadsCount.data().count,
-          bookings: bookingsCount.data().count
+          bookings: bookingsCount.data().count,
+          testimonials: testimonialsCount.data().count
         });
       } catch (error) {
         console.error("Error in dashboard:", error);
@@ -59,6 +62,7 @@ export default function Dashboard() {
     { label: t('admin.blog'), value: stats.posts, icon: FileText, color: 'bg-green-500' },
     { label: t('admin.leads'), value: stats.leads, icon: MessageSquare, color: 'bg-orange-500' },
     { label: t('admin.bookings'), value: stats.bookings, icon: Calendar, color: 'bg-pink-500' },
+    { label: t('admin.testimonials'), value: stats.testimonials, icon: Users, color: 'bg-yellow-500' },
   ];
 
   return (

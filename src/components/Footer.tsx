@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Hammer, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { 
+  Hammer, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, 
+  Youtube, Github, MessageCircle, Send, Globe 
+} from 'lucide-react';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '@/context/LanguageContext';
@@ -7,6 +10,21 @@ import { useLanguage } from '@/context/LanguageContext';
 export default function Footer() {
   const { settings } = useSiteSettings();
   const { t } = useLanguage();
+
+  const getSocialIcon = (platform: string) => {
+    const p = platform.toLowerCase();
+    if (p.includes('facebook')) return Facebook;
+    if (p.includes('twitter') || p.includes('x.com')) return Twitter;
+    if (p.includes('instagram')) return Instagram;
+    if (p.includes('linkedin')) return Linkedin;
+    if (p.includes('youtube')) return Youtube;
+    if (p.includes('github')) return Github;
+    if (p.includes('whatsapp')) return MessageCircle;
+    if (p.includes('telegram')) return Send;
+    if (p.includes('mail') || p.includes('email')) return Mail;
+    if (p.includes('phone') || p.includes('call')) return Phone;
+    return Globe;
+  };
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -29,11 +47,31 @@ export default function Footer() {
             <p className="text-sm text-gray-400">
               {settings.footerDescription || t('app.description')}
             </p>
-            <div className="flex space-x-4">
-              {settings.socialFacebook && <a href={settings.socialFacebook} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Facebook size={20} /></a>}
-              {settings.socialTwitter && <a href={settings.socialTwitter} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Twitter size={20} /></a>}
-              {settings.socialInstagram && <a href={settings.socialInstagram} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Instagram size={20} /></a>}
-              {settings.socialLinkedin && <a href={settings.socialLinkedin} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Linkedin size={20} /></a>}
+            <div className="flex flex-wrap gap-4">
+              {settings.socialLinks && settings.socialLinks.length > 0 ? (
+                settings.socialLinks.map((link, index) => {
+                  const Icon = getSocialIcon(link.platform);
+                  return (
+                    <a 
+                      key={index} 
+                      href={link.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="hover:text-blue-500 transition-colors"
+                      title={link.platform}
+                    >
+                      <Icon size={20} />
+                    </a>
+                  );
+                })
+              ) : (
+                <>
+                  {settings.socialFacebook && <a href={settings.socialFacebook} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Facebook size={20} /></a>}
+                  {settings.socialTwitter && <a href={settings.socialTwitter} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Twitter size={20} /></a>}
+                  {settings.socialInstagram && <a href={settings.socialInstagram} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Instagram size={20} /></a>}
+                  {settings.socialLinkedin && <a href={settings.socialLinkedin} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Linkedin size={20} /></a>}
+                </>
+              )}
             </div>
           </div>
 

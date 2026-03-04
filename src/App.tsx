@@ -1,11 +1,13 @@
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import ScrollToTop from '@/components/ScrollToTop';
 import RootLayout from '@/layouts/RootLayout';
 import AdminLayout from '@/layouts/AdminLayout';
+import { insertInitialData } from '@/lib/initialData';
 
 // Public Pages
 import Home from '@/pages/Home';
@@ -30,6 +32,10 @@ import AdminSettings from '@/pages/admin/AdminSettings';
 import AdminAccount from '@/pages/admin/AdminAccount';
 
 export default function App() {
+  useEffect(() => {
+    insertInitialData().catch(console.error);
+  }, []);
+
   return (
     <BrowserRouter>
       <ScrollToTop />

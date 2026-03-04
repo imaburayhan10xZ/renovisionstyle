@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { toast } from 'react-hot-toast';
-import { Loader2, Save, Globe, Home, Info, Phone, Share2, LayoutTemplate, X, ChevronRight, Upload } from 'lucide-react';
+import { 
+  Loader2, Save, Globe, Home, Info, Phone, Share2, 
+  LayoutTemplate, X, ChevronRight, Upload, Plus, Trash2,
+  Facebook, Twitter, Instagram, Linkedin, Youtube, Github, 
+  MessageCircle, Send, ExternalLink
+} from 'lucide-react';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { SiteSettings } from '@/types';
 import { uploadToCloudinary } from '@/lib/cloudinary';
@@ -76,6 +81,19 @@ export default function AdminSettings() {
   };
 
   if (initialLoading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>;
+
+  const getSocialIcon = (platform: string) => {
+    const p = platform.toLowerCase();
+    if (p.includes('facebook')) return Facebook;
+    if (p.includes('twitter') || p.includes('x.com')) return Twitter;
+    if (p.includes('instagram')) return Instagram;
+    if (p.includes('linkedin')) return Linkedin;
+    if (p.includes('youtube')) return Youtube;
+    if (p.includes('github')) return Github;
+    if (p.includes('whatsapp')) return MessageCircle;
+    if (p.includes('telegram')) return Send;
+    return Globe;
+  };
 
   const renderSectionContent = () => {
     switch (activeSection) {
@@ -337,42 +355,96 @@ export default function AdminSettings() {
         );
       case 'social':
         return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Facebook URL</label>
-              <input
-                value={formData.socialFacebook || ''}
-                onChange={(e) => setFormData({ ...formData, socialFacebook: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="https://facebook.com/..."
-              />
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Social Media Profiles</h3>
+              <button
+                type="button"
+                onClick={() => {
+                  const newLinks = [...(formData.socialLinks || [])];
+                  newLinks.push({ platform: '', url: '' });
+                  setFormData({ ...formData, socialLinks: newLinks });
+                }}
+                className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                <Plus size={16} /> Add New Profile
+              </button>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Twitter URL</label>
-              <input
-                value={formData.socialTwitter || ''}
-                onChange={(e) => setFormData({ ...formData, socialTwitter: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="https://twitter.com/..."
-              />
+
+            <div className="space-y-4">
+              {(!formData.socialLinks || formData.socialLinks.length === 0) ? (
+                <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                  <Share2 className="mx-auto text-gray-400 mb-2" size={32} />
+                  <p className="text-gray-500 text-sm">No social links added yet.</p>
+                </div>
+              ) : (
+                formData.socialLinks.map((link, index) => {
+                  const Icon = getSocialIcon(link.platform);
+                  return (
+                    <div key={index} className="flex gap-4 items-start p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700 group">
+                      <div className="p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-blue-600 shrink-0 mt-6">
+                        <Icon size={20} />
+                      </div>
+                      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Platform</label>
+                          <input
+                            value={link.platform}
+                            onChange={(e) => {
+                              const newLinks = [...(formData.socialLinks || [])];
+                              newLinks[index].platform = e.target.value;
+                              setFormData({ ...formData, socialLinks: newLinks });
+                            }}
+                            placeholder="e.g. Facebook, TikTok, WhatsApp"
+                            className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">URL / Link</label>
+                          <div className="relative">
+                            <input
+                              value={link.url}
+                              onChange={(e) => {
+                                const newLinks = [...(formData.socialLinks || [])];
+                                newLinks[index].url = e.target.value;
+                                setFormData({ ...formData, socialLinks: newLinks });
+                              }}
+                              placeholder="https://..."
+                              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                            />
+                            {link.url && (
+                              <a 
+                                href={link.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500"
+                              >
+                                <ExternalLink size={14} />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newLinks = formData.socialLinks?.filter((_, i) => i !== index);
+                          setFormData({ ...formData, socialLinks: newLinks });
+                        }}
+                        className="mt-6 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Instagram URL</label>
-              <input
-                value={formData.socialInstagram || ''}
-                onChange={(e) => setFormData({ ...formData, socialInstagram: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="https://instagram.com/..."
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">LinkedIn URL</label>
-              <input
-                value={formData.socialLinkedin || ''}
-                onChange={(e) => setFormData({ ...formData, socialLinkedin: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="https://linkedin.com/..."
-              />
+
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-900/30">
+              <p className="text-xs text-blue-600 dark:text-blue-400 leading-relaxed">
+                <strong>Pro Tip:</strong> You can add any platform here. The system will automatically try to match the icon based on the platform name (e.g., "Facebook", "WhatsApp", "YouTube").
+              </p>
             </div>
           </div>
         );
