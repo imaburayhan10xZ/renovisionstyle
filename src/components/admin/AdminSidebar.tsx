@@ -50,7 +50,7 @@ export default function AdminSidebar() {
     { name: t('admin.blog'), path: '/impowerfullboss/blog', icon: FileText },
     { name: t('admin.testimonials'), path: '/impowerfullboss/testimonials', icon: Users },
     { name: t('admin.faq'), path: '/impowerfullboss/faq', icon: HelpCircle },
-    { name: t('admin.leads'), path: '/impowerfullboss/leads', icon: MessageSquare },
+    { name: t('admin.messages'), path: '/impowerfullboss/leads', icon: Mail },
     { name: t('admin.bookings'), path: '/impowerfullboss/bookings', icon: Calendar },
     { name: t('admin.account'), path: '/impowerfullboss/account', icon: User },
     { name: t('admin.settings'), path: '/impowerfullboss/settings', icon: Settings },

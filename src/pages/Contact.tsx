@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import emailjs from '@emailjs/browser';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { toast } from 'react-hot-toast';
 import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
@@ -23,26 +24,22 @@ export default function Contact() {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
-    if (!serviceId || !templateId || !publicKey) {
-      // Fallback for demo purposes if keys aren't set
-      console.log('EmailJS keys missing, simulating success', data);
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success(`${t('contact.success')} (Demo Mode)`);
-      reset();
+    if (!db) {
+      toast.error('Database not configured');
       setIsSubmitting(false);
       return;
     }
 
     try {
-      await emailjs.send(serviceId, templateId, data as any, publicKey);
+      await addDoc(collection(db, 'leads'), {
+        ...data,
+        status: 'new',
+        createdAt: serverTimestamp()
+      });
       toast.success(t('contact.success'));
       reset();
     } catch (error) {
-      console.error('EmailJS Error:', error);
+      console.error('Firestore Error:', error);
       toast.error(t('contact.error'));
     } finally {
       setIsSubmitting(false);
