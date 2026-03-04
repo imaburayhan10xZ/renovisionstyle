@@ -7,12 +7,21 @@ export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
     plugins: [react(), tailwindcss()],
+    optimizeDeps: {
+      include: ['react-is'],
+    },
+    build: {
+      commonjsOptions: {
+        include: [/react-is/, /node_modules/],
+      },
+    },
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        'react-is': path.resolve(__dirname, './node_modules/react-is'),
       },
     },
     server: {
