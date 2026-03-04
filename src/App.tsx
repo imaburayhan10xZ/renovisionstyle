@@ -17,7 +17,6 @@ import Blog from '@/pages/Blog';
 
 // Admin Pages
 import Login from '@/pages/admin/Login';
-import Register from '@/pages/admin/Register';
 import Dashboard from '@/pages/admin/Dashboard';
 import AdminServices from '@/pages/admin/AdminServices';
 import AdminProjects from '@/pages/admin/AdminProjects';
@@ -50,7 +49,6 @@ export default function App() {
 
               {/* Admin Routes */}
               <Route path="/impowerfullboss/login" element={<Login />} />
-              <Route path="/impowerfullboss/register" element={<Register />} />
               <Route path="/impowerfullboss" element={<AdminLayout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="services" element={<AdminServices />} />

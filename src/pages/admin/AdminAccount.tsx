@@ -50,10 +50,10 @@ export default function AdminAccount() {
             <AlertTriangle size={24} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-blue-900 dark:text-blue-100 mb-2">Account Management Restricted</h3>
+            <h3 className="text-lg font-bold text-blue-900 dark:text-blue-100 mb-2">Account Management</h3>
             <p className="text-blue-700 dark:text-blue-300 mb-4">
-              For security reasons, creating new admin accounts or deleting existing ones is restricted to the Firebase Console. 
-              You cannot add or remove administrators directly from this panel.
+              For security reasons, registration is disabled in the app. Admin accounts must be managed directly through the Firebase Console. 
+              You can add, remove, or update administrator credentials there.
             </p>
             <a 
               href="https://console.firebase.google.com/" 
