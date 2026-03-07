@@ -29,7 +29,7 @@ const defaultSettings: SiteSettings = {
   
   socialLinks: [
     { platform: 'Facebook', url: 'https://facebook.com' },
-    { platform: 'Twitter', url: 'https://twitter.com' },
+    { platform: 'X', url: 'https://twitter.com' },
     { platform: 'Instagram', url: 'https://instagram.com' },
     { platform: 'LinkedIn', url: 'https://linkedin.com' },
   ],

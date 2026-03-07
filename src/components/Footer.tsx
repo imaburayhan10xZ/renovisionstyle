@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
+import SocialIcon from './SocialIcon';
 import { 
-  Hammer, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, 
-  Youtube, Github, MessageCircle, Send, Globe 
+  Hammer, Mail, Phone, MapPin 
 } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -11,67 +11,77 @@ export default function Footer() {
   const { settings } = useSiteSettings();
   const { t } = useLanguage();
 
-  const getSocialIcon = (platform: string) => {
-    const p = platform.toLowerCase();
-    if (p.includes('facebook')) return Facebook;
-    if (p.includes('twitter') || p.includes('x.com')) return Twitter;
-    if (p.includes('instagram')) return Instagram;
-    if (p.includes('linkedin')) return Linkedin;
-    if (p.includes('youtube')) return Youtube;
-    if (p.includes('github')) return Github;
-    if (p.includes('whatsapp')) return MessageCircle;
-    if (p.includes('telegram')) return Send;
-    if (p.includes('mail') || p.includes('email')) return Mail;
-    if (p.includes('phone') || p.includes('call')) return Phone;
-    return Globe;
-  };
-
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="space-y-4">
-            <Link to="/" className="flex items-center space-x-2">
-              {settings.logo ? (
-                <img src={settings.logo} alt={settings.siteName} className="h-8 w-auto object-contain brightness-0 invert" />
-              ) : (
-                <div className="bg-blue-600 p-1.5 rounded-lg">
-                  <Hammer className="h-6 w-6 text-white" />
-                </div>
-              )}
-              <span className="text-xl font-bold text-white">
-                {settings.siteName || t('app.name')}
-              </span>
-            </Link>
-            <p className="text-sm text-gray-400">
-              {settings.footerDescription || t('app.description')}
-            </p>
-            <div className="flex flex-wrap gap-4">
-              {settings.socialLinks && settings.socialLinks.length > 0 ? (
-                settings.socialLinks.map((link, index) => {
-                  const Icon = getSocialIcon(link.platform);
-                  return (
+          {/* Brand & Social Island */}
+          <div className="space-y-6">
+            <div className="inline-flex flex-col gap-4">
+              {/* Brand Island */}
+              <Link 
+                to="/" 
+                className="inline-flex items-center space-x-3 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl hover:bg-white/15 transition-all hover:scale-[1.02] group"
+              >
+                {settings.logo ? (
+                  <div className="bg-white/10 p-1 rounded-lg">
+                    <img src={settings.logo} alt={settings.siteName} className="h-8 w-auto object-contain" />
+                  </div>
+                ) : (
+                  <div className="bg-blue-600 p-1.5 rounded-lg group-hover:rotate-12 transition-transform">
+                    <Hammer className="h-5 w-5 text-white" />
+                  </div>
+                )}
+                <span className="text-lg font-bold text-white tracking-tight">
+                  {settings.siteName || t('app.name')}
+                </span>
+              </Link>
+
+              {/* Description */}
+              <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
+                {settings.footerDescription || t('app.description')}
+              </p>
+
+              {/* Social Island */}
+              <div className="inline-flex self-start items-center gap-2 p-1.5 bg-white/20 backdrop-blur-xl border border-white/30 rounded-full shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] transition-all hover:bg-white/30">
+                {settings.socialLinks && settings.socialLinks.length > 0 ? (
+                  settings.socialLinks.map((link, index) => (
                     <a 
                       key={index} 
                       href={link.url} 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="hover:text-blue-500 transition-colors"
+                      className="w-10 h-10 flex items-center justify-center rounded-full bg-white/40 border border-white/50 hover:bg-white/70 transition-all hover:scale-110 active:scale-95 shadow-sm"
                       title={link.platform}
                     >
-                      <Icon size={20} />
+                      <SocialIcon platform={link.platform} size={20} className="transition-all" />
                     </a>
-                  );
-                })
-              ) : (
-                <>
-                  {settings.socialFacebook && <a href={settings.socialFacebook} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Facebook size={20} /></a>}
-                  {settings.socialTwitter && <a href={settings.socialTwitter} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Twitter size={20} /></a>}
-                  {settings.socialInstagram && <a href={settings.socialInstagram} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Instagram size={20} /></a>}
-                  {settings.socialLinkedin && <a href={settings.socialLinkedin} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors"><Linkedin size={20} /></a>}
-                </>
-              )}
+                  ))
+                ) : (
+                  <>
+                    {settings.socialFacebook && (
+                      <a href={settings.socialFacebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/40 border border-white/50 hover:bg-white/70 transition-all shadow-sm">
+                        <SocialIcon platform="Facebook" size={20} />
+                      </a>
+                    )}
+                    {settings.socialTwitter && (
+                      <a href={settings.socialTwitter} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/40 border border-white/50 hover:bg-white/70 transition-all shadow-sm">
+                        <SocialIcon platform="Twitter" size={20} />
+                      </a>
+                    )}
+                    {settings.socialInstagram && (
+                      <a href={settings.socialInstagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/40 border border-white/50 hover:bg-white/70 transition-all shadow-sm">
+                        <SocialIcon platform="Instagram" size={20} />
+                      </a>
+                    )}
+                    {settings.socialLinkedin && (
+                      <a href={settings.socialLinkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/40 border border-white/50 hover:bg-white/70 transition-all shadow-sm">
+                        <SocialIcon platform="LinkedIn" size={20} />
+                      </a>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
 

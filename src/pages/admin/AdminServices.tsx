@@ -30,10 +30,7 @@ export default function AdminServices() {
 
   const fetchServices = async () => {
     if (!db) {
-      setServices([
-        { id: '1', title: 'Kitchen Remodeling', description: 'Complete kitchen overhaul.', icon: 'Hammer', image: '' },
-        { id: '2', title: 'Bathroom Renovation', description: 'Modern bathroom designs.', icon: 'Droplets', image: '' },
-      ]);
+      setServices([]);
       setLoading(false);
       return;
     }
@@ -47,11 +44,7 @@ export default function AdminServices() {
       setServices(fetchedServices);
     } catch (error) {
       console.error("Error fetching services: ", error);
-      // Fallback for demo
-      setServices([
-        { id: '1', title: 'Kitchen Remodeling', description: 'Complete kitchen overhaul.', icon: 'Hammer', image: '' },
-        { id: '2', title: 'Bathroom Renovation', description: 'Modern bathroom designs.', icon: 'Droplets', image: '' },
-      ]);
+      setServices([]);
     } finally {
       setLoading(false);
     }

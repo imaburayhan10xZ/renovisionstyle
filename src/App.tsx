@@ -32,10 +32,6 @@ import AdminSettings from '@/pages/admin/AdminSettings';
 import AdminAccount from '@/pages/admin/AdminAccount';
 
 export default function App() {
-  useEffect(() => {
-    insertInitialData().catch(console.error);
-  }, []);
-
   return (
     <BrowserRouter>
       <ScrollToTop />

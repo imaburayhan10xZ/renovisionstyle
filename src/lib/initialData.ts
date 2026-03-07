@@ -1,8 +1,14 @@
-import { collection, addDoc, serverTimestamp, getDocs, query, limit, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, limit, updateDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from './firebase';
 
 export const insertInitialData = async () => {
   if (!db) return;
+
+  // Check if already initialized to prevent re-adding deleted items
+  const configDoc = await getDoc(doc(db, 'system_config', 'initialization'));
+  if (configDoc.exists() && configDoc.data().initialized) {
+    return;
+  }
 
   const services = [
     {
@@ -285,4 +291,10 @@ export const insertInitialData = async () => {
       }
     }
   }
+
+  // Mark as initialized
+  await setDoc(doc(db, 'system_config', 'initialization'), {
+    initialized: true,
+    initializedAt: serverTimestamp()
+  });
 };

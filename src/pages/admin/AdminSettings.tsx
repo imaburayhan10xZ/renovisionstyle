@@ -5,9 +5,9 @@ import { toast } from 'react-hot-toast';
 import { 
   Loader2, Save, Globe, Home, Info, Phone, Share2, 
   LayoutTemplate, X, ChevronRight, Upload, Plus, Trash2,
-  Facebook, Twitter, Instagram, Linkedin, Youtube, Github, 
-  MessageCircle, Send, ExternalLink
+  ExternalLink
 } from 'lucide-react';
+import SocialIcon from '@/components/SocialIcon';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { SiteSettings } from '@/types';
 import { uploadToCloudinary } from '@/lib/cloudinary';
@@ -81,19 +81,6 @@ export default function AdminSettings() {
   };
 
   if (initialLoading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>;
-
-  const getSocialIcon = (platform: string) => {
-    const p = platform.toLowerCase();
-    if (p.includes('facebook')) return Facebook;
-    if (p.includes('twitter') || p.includes('x.com')) return Twitter;
-    if (p.includes('instagram')) return Instagram;
-    if (p.includes('linkedin')) return Linkedin;
-    if (p.includes('youtube')) return Youtube;
-    if (p.includes('github')) return Github;
-    if (p.includes('whatsapp')) return MessageCircle;
-    if (p.includes('telegram')) return Send;
-    return Globe;
-  };
 
   const renderSectionContent = () => {
     switch (activeSection) {
@@ -378,66 +365,63 @@ export default function AdminSettings() {
                   <p className="text-gray-500 text-sm">No social links added yet.</p>
                 </div>
               ) : (
-                formData.socialLinks.map((link, index) => {
-                  const Icon = getSocialIcon(link.platform);
-                  return (
-                    <div key={index} className="flex gap-4 items-start p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700 group">
-                      <div className="p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-blue-600 shrink-0 mt-6">
-                        <Icon size={20} />
+                formData.socialLinks.map((link, index) => (
+                  <div key={index} className="flex gap-4 items-start p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700 group">
+                    <div className="p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-blue-600 shrink-0 mt-6 flex items-center justify-center w-10 h-10">
+                      <SocialIcon platform={link.platform} size={20} />
+                    </div>
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Platform</label>
+                        <input
+                          value={link.platform}
+                          onChange={(e) => {
+                            const newLinks = [...(formData.socialLinks || [])];
+                            newLinks[index].platform = e.target.value;
+                            setFormData({ ...formData, socialLinks: newLinks });
+                          }}
+                          placeholder="e.g. Facebook, TikTok, WhatsApp"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
                       </div>
-                      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Platform</label>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">URL / Link</label>
+                        <div className="relative">
                           <input
-                            value={link.platform}
+                            value={link.url}
                             onChange={(e) => {
                               const newLinks = [...(formData.socialLinks || [])];
-                              newLinks[index].platform = e.target.value;
+                              newLinks[index].url = e.target.value;
                               setFormData({ ...formData, socialLinks: newLinks });
                             }}
-                            placeholder="e.g. Facebook, TikTok, WhatsApp"
+                            placeholder="https://..."
                             className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                           />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">URL / Link</label>
-                          <div className="relative">
-                            <input
-                              value={link.url}
-                              onChange={(e) => {
-                                const newLinks = [...(formData.socialLinks || [])];
-                                newLinks[index].url = e.target.value;
-                                setFormData({ ...formData, socialLinks: newLinks });
-                              }}
-                              placeholder="https://..."
-                              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                            />
-                            {link.url && (
-                              <a 
-                                href={link.url} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500"
-                              >
-                                <ExternalLink size={14} />
-                              </a>
-                            )}
-                          </div>
+                          {link.url && (
+                            <a 
+                              href={link.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500"
+                            >
+                              <ExternalLink size={14} />
+                            </a>
+                          )}
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newLinks = formData.socialLinks?.filter((_, i) => i !== index);
-                          setFormData({ ...formData, socialLinks: newLinks });
-                        }}
-                        className="mt-6 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                      >
-                        <Trash2 size={18} />
-                      </button>
                     </div>
-                  );
-                })
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newLinks = formData.socialLinks?.filter((_, i) => i !== index);
+                        setFormData({ ...formData, socialLinks: newLinks });
+                      }}
+                      className="mt-6 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                ))
               )}
             </div>
 
