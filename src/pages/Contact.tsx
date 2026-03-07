@@ -8,6 +8,7 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSearchParams } from 'react-router-dom';
 import { Service } from '@/types';
+import SocialIcon from '@/components/SocialIcon';
 
 type FormData = {
   name: string;
@@ -120,6 +121,50 @@ export default function Contact() {
                     <h4 className="font-medium text-gray-900 dark:text-white">{t('contact.info.email')}</h4>
                     <p className="text-gray-600 dark:text-gray-400 mt-1">{settings.contactEmail || "hello@renovatepro.com"}</p>
                   </div>
+                </div>
+              </div>
+
+              {/* Social Media */}
+              <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800">
+                <h4 className="font-bold text-gray-900 dark:text-white mb-6">Follow Us</h4>
+                <div className="flex flex-wrap gap-4">
+                  {settings.socialLinks && settings.socialLinks.length > 0 ? (
+                    settings.socialLinks.map((link, index) => (
+                      <a 
+                        key={index} 
+                        href={link.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all"
+                        title={link.platform}
+                      >
+                        <SocialIcon platform={link.platform} size={24} />
+                      </a>
+                    ))
+                  ) : (
+                    <>
+                      {settings.socialFacebook && (
+                        <a href={settings.socialFacebook} target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                          <SocialIcon platform="Facebook" size={24} />
+                        </a>
+                      )}
+                      {settings.socialTwitter && (
+                        <a href={settings.socialTwitter} target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                          <SocialIcon platform="Twitter" size={24} />
+                        </a>
+                      )}
+                      {settings.socialInstagram && (
+                        <a href={settings.socialInstagram} target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                          <SocialIcon platform="Instagram" size={24} />
+                        </a>
+                      )}
+                      {settings.socialLinkedin && (
+                        <a href={settings.socialLinkedin} target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                          <SocialIcon platform="LinkedIn" size={24} />
+                        </a>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>

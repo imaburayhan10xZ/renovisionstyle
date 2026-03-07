@@ -6,10 +6,30 @@ import {
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '@/context/LanguageContext';
+import { useState, useEffect } from 'react';
+import { collection, getDocs, query, where, limit } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Service } from '@/types';
 
 export default function Footer() {
   const { settings } = useSiteSettings();
   const { t } = useLanguage();
+  const [services, setServices] = useState<Service[]>([]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      if (!db) return;
+      try {
+        const q = query(collection(db, 'services'), where('active', '==', true), limit(5));
+        const snapshot = await getDocs(q);
+        const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Service[];
+        setServices(fetched);
+      } catch (error) {
+        console.error("Error fetching footer services:", error);
+      }
+    };
+    fetchServices();
+  }, []);
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -102,11 +122,23 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">{t('footer.services')}</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.kitchen')}</Link></li>
-              <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.bathroom')}</Link></li>
-              <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.repair')}</Link></li>
-              <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.painting')}</Link></li>
-              <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.flooring')}</Link></li>
+              {services.length > 0 ? (
+                services.map(service => (
+                  <li key={service.id}>
+                    <Link to={`/services?id=${service.id}`} className="hover:text-blue-500 transition-colors">
+                      {service.title}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.kitchen')}</Link></li>
+                  <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.bathroom')}</Link></li>
+                  <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.repair')}</Link></li>
+                  <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.painting')}</Link></li>
+                  <li><Link to="/services" className="hover:text-blue-500 transition-colors">{t('service.flooring')}</Link></li>
+                </>
+              )}
             </ul>
           </div>
 
