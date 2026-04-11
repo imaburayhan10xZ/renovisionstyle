@@ -30,6 +30,7 @@ import AdminLeads from '@/pages/admin/AdminLeads';
 import AdminBookings from '@/pages/admin/AdminBookings';
 import AdminSettings from '@/pages/admin/AdminSettings';
 import AdminAccount from '@/pages/admin/AdminAccount';
+import VCard from '@/pages/VCard';
 
 export default function App() {
   return (
@@ -40,6 +41,9 @@ export default function App() {
           <ThemeProvider>
             <Toaster position="top-right" />
             <Routes>
+              {/* Standalone Route */}
+              <Route path="/vcard" element={<VCard />} />
+
               {/* Public Routes */}
               <Route element={<RootLayout />}>
                 <Route path="/" element={<Home />} />
