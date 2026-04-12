@@ -30,6 +30,7 @@ import AdminLeads from '@/pages/admin/AdminLeads';
 import AdminBookings from '@/pages/admin/AdminBookings';
 import AdminSettings from '@/pages/admin/AdminSettings';
 import AdminAccount from '@/pages/admin/AdminAccount';
+import AdminVCards from '@/pages/admin/AdminVCards';
 import VCard from '@/pages/VCard';
 
 export default function App() {
@@ -43,6 +44,7 @@ export default function App() {
             <Routes>
               {/* Standalone Route */}
               <Route path="/vcard" element={<VCard />} />
+              <Route path="/vcard/:id" element={<VCard />} />
 
               {/* Public Routes */}
               <Route element={<RootLayout />}>
@@ -68,6 +70,7 @@ export default function App() {
                 <Route path="bookings" element={<AdminBookings />} />
                 <Route path="account" element={<AdminAccount />} />
                 <Route path="settings" element={<AdminSettings />} />
+                <Route path="vcards" element={<AdminVCards />} />
                 <Route path="messages" element={<AdminLeads />} /> {/* Redirect messages to leads for now */}
               </Route>
             </Routes>

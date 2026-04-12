@@ -92,12 +92,26 @@ export interface SocialLink {
   icon?: string;
 }
 
+export interface VCardProfile {
+  id: string;
+  name: string;
+  role: string;
+  phone: string;
+  email: string;
+  website: string;
+  address: string;
+  image: string;
+  active: boolean;
+  createdAt: any;
+}
+
 export interface SiteSettings {
   siteName: string;
   logo?: string;
   contactEmail: string;
   contactPhone: string;
   contactAddress: string;
+  contactWebsite?: string;
   socialFacebook?: string;
   socialTwitter?: string;
   socialInstagram?: string;

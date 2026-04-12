@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /impowerfullboss/
+
+Sitemap: https://www.renovationexpert.my/sitemap.xml

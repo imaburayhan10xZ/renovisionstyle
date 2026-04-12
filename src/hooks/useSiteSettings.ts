@@ -9,6 +9,7 @@ const defaultSettings: SiteSettings = {
   contactEmail: 'hello@renovision.com',
   contactPhone: '+1 (555) 123-4567',
   contactAddress: '123 Renovation Lane, Builder City, BC 12345',
+  contactWebsite: 'www.renovationexpert.my',
   themeColor: '#2563eb',
   
   heroTitle: 'Crafting Your Dream Space',

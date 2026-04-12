@@ -55,6 +55,17 @@ service cloud.firestore {
       allow write: if isAuthenticated();
     }
     
+    // System Config: Admin read/write
+    match /system_config/{configId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // VCards: Public read, Admin write
+    match /vcards/{vcardId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    
     // Messages: Admin read, Public write (create only)
     match /messages/{messageId} {
       allow create: if true;

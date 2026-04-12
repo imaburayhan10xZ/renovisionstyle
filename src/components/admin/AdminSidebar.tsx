@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Sun,
   Moon,
-  Mail
+  Mail,
+  Contact
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
@@ -54,6 +55,7 @@ export default function AdminSidebar() {
     { name: t('admin.messages'), path: '/impowerfullboss/leads', icon: Mail },
     { name: t('admin.bookings'), path: '/impowerfullboss/bookings', icon: Calendar },
     { name: t('admin.account'), path: '/impowerfullboss/account', icon: User },
+    { name: 'vCards', path: '/impowerfullboss/vcards', icon: Contact },
     { name: t('admin.settings'), path: '/impowerfullboss/settings', icon: Settings },
   ];
 
