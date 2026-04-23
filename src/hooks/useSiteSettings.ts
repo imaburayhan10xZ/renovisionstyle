@@ -49,7 +49,21 @@ export function useSiteSettings() {
 
     const unsubscribe = onSnapshot(doc(db, 'settings', 'general'), (doc) => {
       if (doc.exists()) {
-        setSettings({ ...defaultSettings, ...doc.data() } as SiteSettings);
+        const newSettings = { ...defaultSettings, ...doc.data() } as SiteSettings;
+        setSettings(newSettings);
+        
+        // Dynamically update document title and favicon
+        if (newSettings.siteName) {
+          document.title = newSettings.siteName;
+        }
+        if (newSettings.logo) {
+          const iconLinks = document.querySelectorAll("link[rel*='icon']");
+          iconLinks.forEach(link => {
+            if (link instanceof HTMLLinkElement) {
+              link.href = newSettings.logo;
+            }
+          });
+        }
       }
       setLoading(false);
     }, (error) => {
